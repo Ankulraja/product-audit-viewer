@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
+// API Base URL - uses environment variable in production
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+
 const SheetViewer = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
@@ -21,7 +24,7 @@ const SheetViewer = () => {
     const fetchData = async () => {
       try {
         setLoading(true)
-        const response = await fetch('http://localhost:3000/api/product-audit')
+        const response = await fetch(`${API_BASE_URL}/api/product-audit`)
         const result = await response.json()
         
         if (result.success) {
