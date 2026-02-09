@@ -1,12 +1,14 @@
 {
-  "name": "google-sheets",
+  "name": "product-audit-viewer-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Product Audit Viewer - Google Sheets API Backend",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["google-sheets", "product-audit", "api"],
   "author": "adanjz <adanzweig@gmail.com>",
   "license": "MIT",
   "dependencies": {
@@ -14,5 +16,8 @@
     "dotenv": "^17.2.4",
     "express": "^4.18.2",
     "googleapis": "^129.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
