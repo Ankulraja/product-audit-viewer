@@ -154,9 +154,9 @@ const SheetViewer = () => {
   }
 
   return (
-    <div className="h-screen bg-slate-900 flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-slate-900 flex flex-col">
       {/* Header */}
-      <header className="bg-slate-800 border-b border-slate-700 px-2 sm:px-4 py-1.5 sm:py-2 flex-shrink-0">
+      <header className="bg-slate-800 border-b border-slate-700 px-2 sm:px-4 py-1.5 sm:py-2 flex-shrink-0 sticky top-0 z-10">
         <div className="max-w-screen-2xl mx-auto flex flex-wrap items-center justify-between gap-1.5 sm:gap-2">
           {/* Left - Back Button */}
           <button 
@@ -277,10 +277,34 @@ const SheetViewer = () => {
         <>
         <div className="bg-slate-850 border-b border-slate-700 px-2 sm:px-4 py-2 flex-shrink-0" style={{ backgroundColor: '#1a2332' }}>
           <div className="max-w-screen-2xl mx-auto">
-            {/* Search Keyword */}
-            <div className="mb-1.5">
-              <span className="text-slate-500 text-[10px] uppercase tracking-wide">Search Keyword</span>
-              <h2 className="text-white text-sm sm:text-base font-semibold">{currentGroup.query}</h2>
+            {/* Search Keyword Row */}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-6 mb-1.5">
+              {/* Search Keyword */}
+              <div>
+                <span className="text-slate-500 text-[10px] uppercase tracking-wide">Search Keyword</span>
+                <h2 className="text-white text-sm sm:text-base font-semibold">{currentGroup.query}</h2>
+              </div>
+              
+              {/* City */}
+              {currentGroup.city && (
+                <div>
+                  <span className="text-slate-500 text-[10px] uppercase tracking-wide">City</span>
+                  <p className="text-white text-sm sm:text-base font-semibold">{currentGroup.city}</p>
+                </div>
+              )}
+              
+              {/* Query Page URL */}
+              <div className="flex-1 min-w-0">
+                <span className="text-slate-500 text-[10px] uppercase tracking-wide">Query Page</span>
+                <a 
+                  href={`https://dir.indiamart.com/search.mp?ss=${encodeURIComponent((currentGroup.query || '').replace(/\s+/g, '+'))}${currentGroup.city ? '+' + encodeURIComponent(currentGroup.city) : ''}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 text-xs sm:text-sm truncate block transition-colors"
+                >
+                  🔗 View on Indiamart
+                </a>
+              </div>
             </div>
 
             {/* Query Agent Response */}
@@ -356,19 +380,18 @@ const SheetViewer = () => {
         </div>
 
         {/* Products Horizontal Scroll */}
-        <div className="flex-1 overflow-hidden px-2 sm:px-4 py-2">
+        <div className="flex-1 px-2 sm:px-4 py-2 pb-8">
           <div 
             ref={scrollContainerRef}
-            className="max-w-screen-2xl mx-auto h-full overflow-x-auto overflow-y-hidden scrollbar-thin"
+            className="max-w-screen-2xl mx-auto overflow-x-auto scrollbar-thin"
             style={{ scrollbarColor: '#475569 #1e293b' }}
           >
-            <div className="flex gap-3 h-full pb-2" style={{ minWidth: 'max-content' }}>
+            <div className="flex gap-3 pb-2" style={{ minWidth: 'max-content' }}>
               {currentGroup.product_agent_response?.results?.map((result, resultIndex) => {
                 return (
                   <div 
                     key={resultIndex}
                     className="bg-slate-800 rounded-lg border border-slate-700 flex-shrink-0 flex flex-col w-56 sm:w-64 md:w-72"
-                    style={{ height: 'calc(100% - 8px)' }}
                   >
                     {/* Card Header */}
                     <div className="bg-slate-700/50 px-2 py-1.5 flex items-center justify-between border-b border-slate-700 flex-shrink-0">
@@ -423,9 +446,9 @@ const SheetViewer = () => {
 
                       {/* All Relevance Badges */}
                       <div className="space-y-1.5 mt-auto">
-                        {/* Manual Relevance */}
+                        {/* Relevance */}
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-slate-500 text-[10px] sm:text-xs min-w-[55px] sm:min-w-[70px]">Manual:</span>
+                          <span className="text-slate-500 text-[10px] sm:text-xs min-w-[80px] sm:min-w-[100px]">Relevance:</span>
                           <span className={`px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium rounded ${getRelevanceBadgeStyle(result.relevance || 'N/A')}`}>
                             {result.relevance || 'N/A'}
                           </span>
@@ -433,7 +456,7 @@ const SheetViewer = () => {
                         
                         {/* Critical Relevance */}
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-slate-500 text-[10px] sm:text-xs min-w-[55px] sm:min-w-[70px]">Critical:</span>
+                          <span className="text-slate-500 text-[10px] sm:text-xs min-w-[80px] sm:min-w-[100px]">Critical Relevance:</span>
                           <span className={`px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium rounded ${getRelevanceBadgeStyle(result.critical_relevance || 'N/A')}`}>
                             {result.critical_relevance || 'N/A'}
                           </span>
@@ -571,6 +594,21 @@ const SheetViewer = () => {
                       </div>
                     )}
                   </div>
+                  
+                  {/* View Product Button */}
+                  {modalData.display_id && (
+                    <a 
+                      href={`https://www.indiamart.com/proddetail/${modalData.display_id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white text-sm font-medium rounded-lg transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                      View on Indiamart
+                    </a>
+                  )}
                 </div>
               </div>
 
